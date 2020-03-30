@@ -20,13 +20,13 @@ app.get("/request", function(req,res){
   res.render("request.ejs")
 })
 
-const ItemSchema = new mongoose.Schema({
-  productID: String,
-  name: String,
-  description: String,
-  location: String,
-  quantity: String
-
-})
+// const ItemSchema = new mongoose.Schema({
+//   productID: String,
+//   name: String,
+//   description: String,
+//   location: String,
+//   quantity: String
+//
+// })
 
 const Item = mongoose.model("Item", ItemSchema)

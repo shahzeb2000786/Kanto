@@ -8,9 +8,13 @@
     <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat|Ubuntu" rel="stylesheet">
 
+
+
+  <link rel="stylesheet" href="/css/styles.css">
+
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/styles.css">
+<!-- <link rel="stylesheet" href="/css/styles.css" type= "text/css"> -->
 
   <!-- Font Awesome -->
   <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
@@ -26,3 +30,27 @@
 
   </head>
   <body>
+    <div class="bg-dark fixed-top position-static d-flex">
+
+      <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Menu
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/">Home</a>
+          <a class="dropdown-item" href="request">Request</a>
+          <a class="dropdown-item" href="orderSummary">Order Summary</a>
+          <a class="dropdown-item" href="Inventory">Inventory</a>
+          <!-- <div class="dropdown-divider"></div> -->
+        </div>
+      </div>
+      <h1 class="text-white mx-auto">Kanto</h1>
+
+      <form class="form-inline d-flex justify-content-center md-form form-sm">
+        <input class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search"
+          aria-label="Search">
+        <button class="fas fa-search" type = "submit" aria-hidden="true"></button>
+      </form>
+
+    </div>

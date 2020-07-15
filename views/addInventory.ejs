@@ -1,0 +1,40 @@
+<%- include ("partials/header.ejs")%>
+
+
+<h1>Add Inventory</h1>
+
+
+<div  class="background-color">
+  <h1 class="pb-3 text-center">Add an item to the inventory</h1>
+
+
+ <form class="text-center card-width card-color card-border pt-5  pb-3" action="/addInventory" method="post"
+ <input class = "mb-3" type="text" name="test-itemCode" placeholder = "Enter unique item code" >
+
+
+   <input class = "mb-3" type="text" name="itemCode" placeholder = "Enter unique item code" >
+   <input class = "mb-3" type="text" name="size" placeholder = "Size of item if applicable">
+   <input class = "mb-3" type="text" name="units" placeholder = "Enter current units of the item" >
+
+   <input  class = "mb-3" type="text" name="unitDescription" placeholder = "What is considered one unit?">
+   <input class = "mb-3" type="text" name="location" placeholder = "Location of item">
+   <input  class = "mb-3" type="text" name="subLocation" placeholder = "Sub-location of the item">
+   <input class = "mb-3" type="text" name="itemDescription" placeholder = "Description/Name of the item">
+   <input class = "mb-3" type="text" name="notes" placeholder = "Add any additional notes">
+
+
+
+ <div class="text-center mt-5 pb-5 "><!-- left div-->
+   <button class="btn btn-primary" type="Submit" name="button">Add</button>
+ </div>
+
+ </form>
+</div>
+
+
+
+
+
+
+
+<%- include ("partials/footer.ejs")%>

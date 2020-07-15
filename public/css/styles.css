@@ -1,0 +1,29 @@
+.card-color{/*change stat cards color */
+  background-color:#bbe1fa
+}
+
+ .card-width{  /*this class targets the statistics cards for individuals and centers them. */
+  width: 20%;
+  height:20%;
+  margin-left: 37.5%
+}
+.card-border{
+  border: 2px solid grey
+}
+.card-image{ /* this is the class which formats the images which gts put into the statistics cards*/
+height: 15%;
+width:40%;
+border-radius:50%;
+}
+
+
+.background-color{
+  background-color: #e6f2ff
+}
+
+
+
+.large-button{
+  width:100%;
+  height: 100%
+}

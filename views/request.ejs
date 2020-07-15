@@ -1,89 +1,53 @@
 <%- include ("partials/header.ejs")%>
 
 
+<!-- THIS IS A CAROUSEL -->
+<!-- //-------------------------------------------------------------------------------------------------------------- -->
+<!--Carousel Wrapper-->
 
 
 
+<!-- THIS IS THE ITEM REQUEST FORM -->
+<!-- //-------------------------------------------------------------------------------------------------------------- -->
+<div  class="background-color">
+  <h1 class="pb-3 text-center">Request an Item</h1>
+
+
+ <form class="text-center card-width card-color card-border pt-3  pb-3" action="/request" method="post"
+   <input class = "mb-3" type="email" name="test-email" placeholder = "Enter Your Email" >
+
+   <input class = "mb-3" type="text" name="name" placeholder = "Enter Your Name">
+   <input class = "mb-3" type="email" name="email" placeholder = "Enter Your Email" >
+
+   <input  class = "mb-3" type="text" name="committee" placeholder = "Committee Name">
+   <input class = "mb-3" type="text" name="event" placeholder = "Event Needed for">
+   <input  class = "mb-3" type="text" name="itemCode" placeholder = "Item code">
+   <input class = "mb-3" type="text" name="quantity" placeholder = "Quantity of Item">
+   <input class = "mb-3" type="text" name="itemDescription" placeholder = "Description Of Item">
 
 
 
+ <div class="text-center mt-5 pb-5 "><!-- left div-->
+   <button class="btn btn-primary" type="Submit" name="button">Request</button>
+ </div>
 
-
-<div class="bg-dark fixed-top position-static d-flex">
-
-
-
-
-
-
-
-
-  <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent1" <span class="dark-blue-text"><i class="fas fa-bars fa-1x"></i></span></button> -->
-
-
-
-
-
-
-  <div class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      Menu
-    </a>
-
-    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-      <a class="dropdown-item" href="#">Request</a>
-      <a class="dropdown-item" href="#">Place Order</a>
-      <a class="dropdown-item" href="#">Order Summary</a>
-      <!-- <div class="dropdown-divider"></div> -->
-    </div>
-  </div>
-
-
-
-
-
-
-  <!-- Collapsible content -->
-
-  <!-- Collapsible content -->
-
-  <!-- Search form -->
-
-
-  <h1 class="text-white mx-auto">Kanto</h1>
-
-  <form class="form-inline d-flex justify-content-center md-form form-sm">
-    <input class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search"
-      aria-label="Search">
-    <button class="fas fa-search" type = "submit" aria-hidden="true"></button>
-  </form>
-
-
-
-<form class="" action="index.html" method="post">
-  <input type="text" name="" value="">
-</form>
-
-
-
-
-
-<div class="bg-dark fixed-bottom position-static d-flex">
-  <div>
-    <p class="text-white">  227B HUB University Park, PA 16802</p>
-    <p class="text-white">  Email:homecoming@psu.edu</p>
-    <p class="text-white">  Phone: (814) 863-4299</p>
-  </div>
-  <div class="col-lg-9">
-    <h1 class="text-center text-white">PSU Homecoming</h1>
-  </div>
-
-  <div >
-    <p class="text-left text-white">PSU Homecoming</p>
-  </div>
+ </form>
 </div>
 
-<!-- Press -->
+
+
+</div>
+
+
+
+
+
+
+
+<!-- //-------------------------------------------------------------------------------------------------------------- -->
+
+
+
 
 
 <%- include ("partials/footer.ejs")%>

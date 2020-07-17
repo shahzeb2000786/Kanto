@@ -1,14 +1,10 @@
 <%- include ("partials/header.ejs")%>
 
 
-<!-- THIS IS A CAROUSEL -->
-<!-- //-------------------------------------------------------------------------------------------------------------- -->
-<!--Carousel Wrapper-->
 
 
+<!-- this is the item request form -->
 
-<!-- THIS IS THE ITEM REQUEST FORM -->
-<!-- //-------------------------------------------------------------------------------------------------------------- -->
 <div  class="background-color">
   <h1 class="pb-3 text-center">Request an Item</h1>
 
@@ -21,10 +17,15 @@
 
    <input  class = "mb-3" type="text" name="committee" placeholder = "Committee Name">
    <input class = "mb-3" type="text" name="event" placeholder = "Event Needed for">
-   <input  class = "mb-3" type="text" name="itemCode" placeholder = "Item code">
    <input class = "mb-3" type="text" name="quantity" placeholder = "Quantity of Item">
    <input class = "mb-3" type="text" name="itemDescription" placeholder = "Description Of Item">
-
+   <select name = "itemCode">
+     <% for (i in InventoryItems){%>
+       <% let dropDownItemName = InventoryItems[i].itemCode + ": " + InventoryItems[i].itemDescription %>
+       <% let dropDownItemValue = InventoryItems[i].itemCode %>
+       <option value = <%=dropDownItemValue%>  > <%=dropDownItemName%> </option>
+       <% } %>
+      </select>
 
 
  <div class="text-center mt-5 pb-5 "><!-- left div-->
@@ -33,11 +34,6 @@
 
  </form>
 </div>
-
-
-
-</div>
-
 
 
 

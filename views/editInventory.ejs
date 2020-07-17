@@ -1,7 +1,60 @@
 <%- include ("partials/header.ejs")%>
 
+<div class="background-color">
+  <h1 class="text-center ">Edit Inventory</h1>
+  <form class="form-inline d-flex justify-content-center md-form form-sm" method= "post" action= "/editInventory/search">
+    <select name="searchedItem" class="form-control form-control-sm mr-3 w-75">
+      <option value="" disabled selected>Select items to edit</option>
+      <% for (i in ItemsToRender){%>
+        <% let dropDownItemName = ItemsToRender[i].itemCode + ": " + ItemsToRender[i].itemDescription %>
+        <% let dropDownItemValue = ItemsToRender[i].itemCode %>
+        <option value = <%=dropDownItemValue%>  > <%=dropDownItemName%> </option>
+        <% } %>
+    </select>
+        <button class="btn btn-primary" type = "submit" aria-hidden="true">Search</button>
+</form>
 
-<h1>Edit Inventory</h1>
+    <div class= "text-center pt-4 pb-4">
+      <a class = "text-center " href = "/editInventory" >See all Inventory Items</a>
+    </div>
+        <% for (i in ItemsToRender) { %>
+
+          <div class = "background-color text-center">
+
+          <div class="card-width card-color card-border pt-1  mb-4 pl-2   " >
+
+            <h3 class = "mb-3"><%= ItemsToRender[i].itemDescription%> </h3>
+            <h6 class = "mb-3"><%= ItemsToRender[i].itemCode%></h6>
+
+    <form class="text-center  card-color " action="/editInventory" method="post"
+              <input>
+
+              <input class = "mb-3" type="textbox" name="itemCode" value = <%=ItemsToRender[i].itemCode%>  >
+              <input class = "mb-3" type="textbox" name="size"  value = <%=ItemsToRender[i].size%> >
+              <input class = "mb-3" type="textbox" name="units" value = <%=ItemsToRender[i].units%>  >
+
+              <input  class = "mb-3" type="textbox" name="unitDescription" value = <%=ItemsToRender[i].unitDescription%> >
+              <input class = "mb-3" type="textgox" name="location" value = <%=ItemsToRender[i].location%> >
+              <input  class = "mb-3" type="textgox" name="subLocation" value = <%=ItemsToRender[i].subLocation%> >
+              <input class = "mb-3" type="textbox" name="itemDescription" value = <%=ItemsToRender[i].itemDescription%> >
+              <input class = "mb-3" type="textbox" name="notes" value = <%=ItemsToRender[i].notes%>  >
+              <div class="text-center mt-5 pb-5 "><!-- left div-->
+                <button class="btn btn-primary" type="Submit" name="button">Edit</button>
+              </div>
+
+   </form>
+
+          </div>
+        </div>
+
+
+          <% } %>
+
+
+
+
+</div>
+
 
 
 

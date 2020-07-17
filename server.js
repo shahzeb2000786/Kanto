@@ -73,8 +73,6 @@ app.get("/orderSummary/:itemCode", function(req,res){
 })
 
 
-
-
 app.post("/orderSummary/search", function(req,res){
   let itemsToRender = []
   Item.find({itemCode: req.body.searchedItem}, function (err,items){
@@ -95,6 +93,7 @@ app.get("/orderSummary", function(req,res){//this get request will contain all t
     if(err){
       console.log(err)
     }
+
       res.render("orderSummary.ejs", { ItemsToRender: items })
 
   })
@@ -112,11 +111,56 @@ app.get("/Inventory", function(req,res ){
 
 app.route("/editInventory")
   .get(function(req,res){
-    res.render("editInventory.ejs")
+
+    InventoryItem.find(function(err,items){
+      if (err){
+        console.log(err)
+      }
+      res.render("editInventory.ejs", {ItemsToRender: items})
+    })
   })
+
   .post(function(req,res){
+    console.log(req.body.itemCode)
+    InventoryItem.findOneAndUpdate({itemCode: req.body.itemCode}, {
+      itemCode: req.body.itemCode,//itemcode of the item
+      size: req.body.size, //the size of the item,might not be applicable to all ItemSchema
+      units: req.body.units,// current units of the item
+      unitDescription: req.body.unitDescription, //description of what a single unit of the item is
+      location: req.body.location, //where the item is located at
+      subLocation: req.body.subLocation, //the specific place where the item is located within the location
+      itemDescription: req.body.itemDescription,//description of the item
+      notes: req.body.notes //any additional notes about the item.
+
+    }).then(item => console.log(item))
+    .catch(err => console.log(err))
+    res.redirect("/editInventory")
 
   })
+
+
+
+
+
+// app.get("/editInventory/search", function(req,res){
+//   res.redirect("/editInventory")
+// })
+app.post("/editInventory/search", function(req,res){
+  InventoryItem.find({itemCode: req.body.searchedItem},function(err,items){
+    if (err){
+      console.log(err)
+    }
+    else{
+      res.render("editInventory", {ItemsToRender: items})
+    }
+
+  })
+})
+
+
+
+
+
 
   app.route("/addInventory")
     .get(function(req,res){
@@ -133,7 +177,7 @@ app.route("/editInventory")
         subLocation: req.body.subLocation, //the specific place where the item is located within the location
         itemDescription: req.body.itemDescription,//description of the item
         notes: req.body.notes //any additional notes about the item.
-      })
+      });
       addedInventoryItem.save()
       res.redirect("/addInventory")
 
@@ -145,7 +189,17 @@ app.route("/editInventory")
 app.route('/request')//route handler for the request route entry in the post method
 
   .get(function (req, res) {//renders the request page
-    res.render("request.ejs")
+    InventoryItem.find(function(err, items){//the items that our found will be used to make a dropdown where users can select which items they want ot request by and it will show both the itemcode and itemname in each option in the dropdown so they don't have to look up itemcodes separately.
+      if (err){//logs any errors there were in finding items in the collection
+        console.log(err)
+      }
+      else{
+          res.render("request.ejs", {InventoryItems: items})//renders request.ejs with the "items" array passed in as the value for ejs variable "InventoryItems".
+      }
+    })
+
+
+
   })
   .post(function (req, res) {//creates a new item entry when a post request is made to the /request app
 
@@ -159,6 +213,7 @@ app.route('/request')//route handler for the request route entry in the post met
       quantity: req.body.quantity //quantity  of the item being requested by the user.     maybe change to a number data type
 
     })
+    console.log(req.body.itemcodes)
     requestedItemsArray = []
     requestedItemsArray.push(req.body.productID, req.body.email,req.body.name,req.body.committee,req.body.event, req.body.itemCode,req.body.itemDescription,req.body.quantity,req.body.dateNeededBy,
     req.body.timeNeededBy,req.body.locationOfItem,req.body.unitsAvailable,req.body.status);//this line and the line above adds all the requested item info to the array which will be used to write to the excel file
@@ -174,7 +229,7 @@ app.route('/request')//route handler for the request route entry in the post met
         while (row.getCell(2).value != req.body.itemCode && row.getCell(2).value != null){
           rowNumber = rowNumber + 1 //variable which is used to traverse to next row in excel sheet
           row = worksheet.getRow(rowNumber)//resets row to next row if the row is filled already wit ninfo
-          console.log(rowNumber)
+          // console.log(rowNumber)
         }
         row.getCell(8).value = parseInt(row.getCell(8).value) - parseInt(req.body.quantity)
         row.commit()//commits changes made to the row

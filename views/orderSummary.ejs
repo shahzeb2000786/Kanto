@@ -8,16 +8,20 @@
 
     <h1 class="text-center ">Order Summary</h1>
     <form class="form-inline d-flex justify-content-center md-form form-sm" method= "post" action= "/orderSummary/search">
-      <input name = "searchedItem" class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search Recent Requests By Item Code"
-        aria-label="Search">
-      <button class="fas fa-search" type = "submit" aria-hidden="true"></button>
+      <select name="searchedItem" class="form-control form-control-sm mr-3 w-75" placeholder "Search Items by item code">
 
+        <% for (i in ItemsToRender){%>
+          <% let dropDownItemName = ItemsToRender[i].itemCode + ": " + ItemsToRender[i].itemDescription %>
+          <% let dropDownItemValue = ItemsToRender[i].itemCode %>
+          <option value = <%=dropDownItemValue%>  > <%=dropDownItemName%> </option>
+          <% } %>
+      </select>
+      <button class="btn btn-primary" type = "submit" aria-hidden="true">Search</button>
     </form>
 
 
-
     <div class= "text-center pt-4">
-      <a class = "text-center pt-4" href = "/orderSummary">See all orders</a>
+      <a class = "text-center pt-4" href = "/orderSummary" >See all orders</a>
     </div>
 
 
@@ -32,12 +36,11 @@
               <div class = "background-color">
 
               <div class="card-width card-color card-border pt-3 pb-3 pl-2 mb-3  " >
-              <a>
-              </a>
               <h3 >Item: <%=ItemsToRender[i].itemDescription%> </h3>
+              <p class="card-text">Item code: <%=ItemsToRender[i].itemCode%> </p>
               <p class="card-text">Quantity Requested: <%=ItemsToRender[i].quantity%> </p>
               <p class="card-text">Requested By: <%=ItemsToRender[i].name%></p>
-              <p class="card-text">Item code: <%=ItemsToRender[i].itemCode%> </p>
+              <p class="card-text">Committee: <%=ItemsToRender[i].committee%></p>
               <p class="card-text">Event needed for: <%=ItemsToRender[i].event%></p>
               </div>
             </div>

@@ -8,6 +8,8 @@ const ejs = require("ejs"); //requires the ejs modueles which allows for use of 
 const mongoose = require("mongoose", {useNewUrlParser: true}, {useUnifiedTopology: true}); //creates a mongoose constant which is created by requiring the mongoose module and passing in the usernewurlparser which needs to be used in order for the constant to function properly
 const ObjectsToCsv = require('objects-to-csv');; //library which allows json to be converted to csv
 const open = require ("open")
+const write = require ("write")
+
 app.set("view engine", "ejs") //sets the view engine as ejs to allow to use ejs files
 app.use(bodyParser.urlencoded({extended: false})) //option that needs to be passedin order to use body parser
 app.use(express.static("public"));
@@ -244,20 +246,35 @@ app.post("/download/inventory",function(req,res){
       }
 
       else{
-          (dataToCsv(items))
+        let csvItems = []// will contain the string items that need to be put into the csv which the user will download
+        csvItems.push("Item Code" + "," + "Size" + "," + "Units" + "," + "Unit Description" + "," + "Location" + "," + "Sub-location" + "," + "Description" + "," + "Notes" + "\n") //the appended String will be the titles for the cells in the csv
+
+          for (i in items){//iterates through all the items in the InventoryItem collection
+            item = items[i] //gets the current Item in the items array in the for loop
+            let stringCsvToAppend = item.itemCode + "," +  item.size + "," + item.units + "," +  item.unitDescription + "," + item.location + "," +  item.subLocation + "," + item.itemDescription + "," + item.notes + "\n"//creates a csv item by properly formatting the javascirpt object into a csv string
+            csvItems.push(stringCsvToAppend)//adds the csv string to the array which contains all the csv strings
+
+          }
+          let finalCSV = csvItems.join('')//joins all the items in the csvItems array into one string
+          console.log(finalCSV)
+          write.sync('Inventory.csv', finalCSV, { newline: false });//writes the finalCSV string to a file called "Inventory.csv", and inventory.csv is the file which the user will download
+          openFile("Inventory.csv")
       }//ensd of else statement
     })//end of inventoryItem.find and post route
 })//end of post route
+
+
+
+
+
 
   app.post("download/requestedItems",function(req,res){
 
   })
 
-  async function dataToCsv(data) {
-    let csvData =  (await new ObjectsToCsv(data).toString());
-    let Data =  (await new ObjectsToCsv(data));
-     //console.log(csvData)
-    // console.log(Data)
 
+
+async function openFile(url){
+   await open(url);
 }
-  //----------------------download  page get and past routes----------------------
+  //----------------------end of download  page get and past routes----------------------

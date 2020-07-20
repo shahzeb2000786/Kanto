@@ -6,12 +6,14 @@ const exceljs = require("exceljs")
 const app = express(); //assigns app to an instance of express
 const ejs = require("ejs"); //requires the ejs modueles which allows for use of scriptlets
 const mongoose = require("mongoose", {useNewUrlParser: true}, {useUnifiedTopology: true}); //creates a mongoose constant which is created by requiring the mongoose module and passing in the usernewurlparser which needs to be used in order for the constant to function properly
-//mongoose.connect("mongodb://localhost:27017/supplyDB", {userNewUrlParser: true}) //the code which allows for mongoose to connect with the local host and make changes to the databse called "userDB"
+const ObjectsToCsv = require('objects-to-csv');; //library which allows json to be converted to csv
+const open = require ("open")
 app.set("view engine", "ejs") //sets the view engine as ejs to allow to use ejs files
 app.use(bodyParser.urlencoded({extended: false})) //option that needs to be passedin order to use body parser
-app.listen(3000)
-// app.use(express.static("/public"));
 app.use(express.static("public"));
+app.listen(3000)
+ //app.use(express.static("/public"));
+
 
 app.set('view engine', 'ejs');
 
@@ -58,20 +60,34 @@ const ItemSchema = new mongoose.Schema({//this itemschema is the schema which is
 const Item = mongoose.model("Item", ItemSchema)
 //--------------------------------------------------------------------------------------------------------------
 
-app.get("/", function(req, res){//get request to home page
-  res.render("index.ejs");
-});
-//---------------------------------------------
-app.get("/orderSummary/:itemCode", function(req,res){
-  let itemsToRender = []
-  Item.find({itemCode: req.params.itemCode}, function (err,items){
-    if (err){
-      console.log(err)
-    }
-    console.log(items)
-  })
+
+
+
+
+
+
+app.get("/", function (req,res){
+  res.render("index.ejs")
 })
 
+
+
+
+
+//-------------------------------orderSummary and orderSummary/search routes-------------------------------------------------------------
+app.get("/orderSummary", function(req,res){//this get request will contain all the requests that have been made
+  Item.find(function(err,items){//finds all requested items in databse
+    if(err){
+      console.log(err)
+    }
+      res.render("orderSummary.ejs", { ItemsToRender: items })
+  })
+
+})
+
+app.get("/orderSummary/search", function(req,res){
+  res.redirect("/orderSummary")
+})
 
 app.post("/orderSummary/search", function(req,res){
   let itemsToRender = []
@@ -82,33 +98,13 @@ app.post("/orderSummary/search", function(req,res){
     res.render("orderSummary.ejs", {ItemsToRender: items})
   })
 })
+//-------------------------------orderSummary and orderSummary/search routes-------------------------------------------------------------
 
 
-
-
-
-
-app.get("/orderSummary", function(req,res){//this get request will contain all the requests that have been made
-  Item.find(function(err,items){//finds all requested items in databse
-    if(err){
-      console.log(err)
-    }
-
-      res.render("orderSummary.ejs", { ItemsToRender: items })
-
-  })
-
-})
-
-
-app.get("/Inventory", function(req,res ){
+app.get("/inventory", function(req,res ){
   res.render("Inventory.ejs")
 })
-
-
-
-
-
+//-----------------------------beginning of editInventory------------------------------------------------------------
 app.route("/editInventory")
   .get(function(req,res){
 
@@ -134,20 +130,25 @@ app.route("/editInventory")
 
     }).then(item => console.log(item))
     .catch(err => console.log(err))
+
     res.redirect("/editInventory")
 
   })
+//--------------------------------end of edit inventory routes---------------------------------------------------------
 
 
 
 
 
-// app.get("/editInventory/search", function(req,res){
-//   res.redirect("/editInventory")
-// })
+//--------------------------------editinventory/search routes---------------------------------------------------------
+app.get("/editInventory/search", function(req,res){
+  res.redirect("/editInventory")
+})
+
 app.post("/editInventory/search", function(req,res){
   InventoryItem.find({itemCode: req.body.searchedItem},function(err,items){
     if (err){
+    //  res.render("error.ejs", {ErrorTitle: "Could not edit Item, try again", ErrorDescription: err.toString()})
       console.log(err)
     }
     else{
@@ -156,11 +157,15 @@ app.post("/editInventory/search", function(req,res){
 
   })
 })
+//--------------------------------end of editinventory/search routes---------------------------------------------------------
 
 
 
 
 
+
+
+//--------------------------------addInventory routes ---------------------------------------------------------
 
   app.route("/addInventory")
     .get(function(req,res){
@@ -185,7 +190,7 @@ app.post("/editInventory/search", function(req,res){
 
 
 
-//---------------------------------------------
+//---------------------request routers -----------------------------------------------
 app.route('/request')//route handler for the request route entry in the post method
 
   .get(function (req, res) {//renders the request page
@@ -213,53 +218,46 @@ app.route('/request')//route handler for the request route entry in the post met
       quantity: req.body.quantity //quantity  of the item being requested by the user.     maybe change to a number data type
 
     })
-    console.log(req.body.itemcodes)
-    requestedItemsArray = []
-    requestedItemsArray.push(req.body.productID, req.body.email,req.body.name,req.body.committee,req.body.event, req.body.itemCode,req.body.itemDescription,req.body.quantity,req.body.dateNeededBy,
-    req.body.timeNeededBy,req.body.locationOfItem,req.body.unitsAvailable,req.body.status);//this line and the line above adds all the requested item info to the array which will be used to write to the excel file
-
-
-
-    const inventoryWorkbook = new exceljs.Workbook(); //creates an exceljs workbook
-    inventoryWorkbook.xlsx.readFile("Inventory.xlsx")
-      .then(function(){
-        let worksheet = inventoryWorkbook.getWorksheet(1);//gets the first worksheet in the homcoming.xlsx files
-        rowNumber = 2
-        let row = worksheet.getRow(rowNumber)//sets the variable row, equal to the second row of the 1st sheet of the homecoming xlsx file
-        while (row.getCell(2).value != req.body.itemCode && row.getCell(2).value != null){
-          rowNumber = rowNumber + 1 //variable which is used to traverse to next row in excel sheet
-          row = worksheet.getRow(rowNumber)//resets row to next row if the row is filled already wit ninfo
-          // console.log(rowNumber)
-        }
-        row.getCell(8).value = parseInt(row.getCell(8).value) - parseInt(req.body.quantity)
-        row.commit()//commits changes made to the row
-        return inventoryWorkbook.xlsx.writeFile("Inventory.xlsx")//rewrites the file with the added values and names it homecoming.xlsx
-      })
-
-
-    const workbook = new exceljs.Workbook(); //creates an exceljs workbook
-    workbook.xlsx.readFile("Homecoming.xlsx")
-      .then(function(){
-        let worksheet = workbook.getWorksheet(1);//gets the first worksheet in the homcoming.xlsx files
-        rowNumber = 2
-        let row = worksheet.getRow(rowNumber)//sets the variable row, equal to the second row of the 1st sheet of the homecoming xlsx file
-        while (row.getCell(2).value != null){
-          rowNumber = rowNumber + 1 //variable which is used to traverse to next row in excel sheet
-          row = worksheet.getRow(rowNumber)//resets row to next row if the row is filled already wit ninfo
-        }
-        for (i = 1; i<=13; i++){
-          row.getCell(i).value = requestedItemsArray[i-1]
-        }
-        row.commit()//commits changes made to the row
-        return workbook.xlsx.writeFile("Homecoming.xlsx")//rewrites the file with the added values and names it homecoming.xlsx
-      })
-
-
-
 
 
     requestedItem.save()//Saves the requested item to the mongo database
     res.redirect("/request")
 
   })
-  //------------------------------------------
+  //--------------------------------------------------------------------------
+
+
+
+
+
+
+
+//----------------------download  page get and past routes----------------------
+app.get("/download",function(req,res){
+  res.render("download.ejs")
+})
+
+app.post("/download/inventory",function(req,res){
+    InventoryItem.find(function(err,items){
+      if (err){
+        console.log(err)
+      }
+
+      else{
+          (dataToCsv(items))
+      }//ensd of else statement
+    })//end of inventoryItem.find and post route
+})//end of post route
+
+  app.post("download/requestedItems",function(req,res){
+
+  })
+
+  async function dataToCsv(data) {
+    let csvData =  (await new ObjectsToCsv(data).toString());
+    let Data =  (await new ObjectsToCsv(data));
+     //console.log(csvData)
+    // console.log(Data)
+
+}
+  //----------------------download  page get and past routes----------------------

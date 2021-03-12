@@ -18,14 +18,29 @@
    <input  class = "mb-3" type="text" name="committee" placeholder = "Committee Name">
    <input class = "mb-3" type="text" name="event" placeholder = "Event Needed for">
    <input class = "mb-3" type="text" name="quantity" placeholder = "Quantity of Item">
-   <input class = "mb-3" type="text" name="itemDescription" placeholder = "Description Of Item">
-   <select name = "itemCode">
+   <!-- <input class = "mb-3" type="text" name="itemDescriptions" placeholder = "Description Of Item"> -->
+
+
+   <select name = "itemDescription" class = "mb-3 ml-3 mr-3">
+     <option value="value" selected>Select Item Name</option>
+     <% for (i in InventoryItems){%>
+       <% let dropDownItemName = InventoryItems[i].itemDescription%>
+       <option value = <%=dropDownItemName%>  > <%=dropDownItemName%> </option>
+       <% } %>
+      </select>
+
+
+   <select name = "itemCode" class = "ml-5 mr-5">
+     <option value="value" selected>Select Item Code</option>
      <% for (i in InventoryItems){%>
        <% let dropDownItemName = InventoryItems[i].itemCode + ": " + InventoryItems[i].itemDescription %>
        <% let dropDownItemValue = InventoryItems[i].itemCode %>
        <option value = <%=dropDownItemValue%>  > <%=dropDownItemName%> </option>
        <% } %>
       </select>
+
+
+
 
 
  <div class="text-center mt-5 pb-5 "><!-- left div-->

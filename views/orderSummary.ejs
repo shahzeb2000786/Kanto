@@ -10,14 +10,15 @@
     <form class="form-inline d-flex justify-content-center md-form form-sm" method= "post" action= "/orderSummary/search">
       <select name="searchedItem" class="form-control form-control-sm mr-3 w-75" placeholder "Search Items by item code">
 
-        <% for (i in ItemsToRender){%>
-          <% let dropDownItemName = ItemsToRender[i].itemCode + ": " + ItemsToRender[i].itemDescription %>
-          <% let dropDownItemValue = ItemsToRender[i].itemCode %>
+        <% for (i in InventoryItems){%>
+          <% let dropDownItemName = InventoryItems[i].itemCode + ": " + InventoryItems[i].itemDescription %>
+          <% let dropDownItemValue = InventoryItems[i].itemCode %>
           <option value = <%=dropDownItemValue%>  > <%=dropDownItemName%> </option>
           <% } %>
       </select>
       <button class="btn btn-primary" type = "submit" aria-hidden="true">Search</button>
     </form>
+
 
 
     <div class= "text-center pt-4">
@@ -33,7 +34,7 @@
 
             <% for (i in ItemsToRender) {%>
 
-              <div class = "background-color">
+              <div class = "background-color ">
 
               <div class="card-width card-color card-border pt-3 pb-3 pl-2 mb-3  " >
               <h3 >Item: <%=ItemsToRender[i].itemDescription%> </h3>

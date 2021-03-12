@@ -26,6 +26,12 @@ const connection = mongoose.connection;
 connection.once("open", function(){
   console.log("Mongo database connection successfully established.")
 })
+//app.use(express.static("/public"));
+
+
+app.set('view engine', 'ejs');
+
+
 
 
 
@@ -62,45 +68,51 @@ const ItemSchema = new mongoose.Schema({//this itemschema is the schema which is
 const Item = mongoose.model("Item", ItemSchema)
 //--------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
 app.get("/", function (req,res){
   res.render("index.ejs")
 })
 
-
-
-
-
 //-------------------------------orderSummary and orderSummary/search routes-------------------------------------------------------------
 app.get("/orderSummary", function(req,res){//this get request will contain all the requests that have been made
   Item.find(function(err,items){//finds all requested items in databse
-    if(err){
+    if(err){//logs errors in finding items from the "Item" collection
       console.log(err)
     }
-      res.render("orderSummary.ejs", { ItemsToRender: items })
-  })
-
-})
+    InventoryItem.find(function(err,inventoryItems){//finds all the items in the inventory
+      if (err){//logs any errors in finding inventory items
+        console.log(err)
+      }
+      else{
+        res.render("orderSummary.ejs", { ItemsToRender: items, InventoryItems: inventoryItems })
+      }
+    })//end of inventoryitem.find
+  })//end of Item.find
+})//end of app.get
 
 app.get("/orderSummary/search", function(req,res){
   res.redirect("/orderSummary")
 })
 
-app.post("/orderSummary/search", function(req,res){
+
+
+app.post("/orderSummary/search", function(req,res){//this post route gets hit up when a user searches for specific ordered items via dropdown on the order Summary page
   let itemsToRender = []
-  Item.find({itemCode: req.body.searchedItem}, function (err,items){
-    if (err){
+  Item.find({itemCode: req.body.searchedItem}, function (err,items){//finds items from requested item database
+    if (err){//logs any errors in finding items from teh "Item" collection
       console.log(err)
     }
-    res.render("orderSummary.ejs", {ItemsToRender: items})
-  })
-})
-//-------------------------------orderSummary and orderSummary/search routes-------------------------------------------------------------
+    InventoryItem.find(function(err,inventoryItems){//finds all items in the inventory
+      if(err){//logs any errors in finding inventory items
+        console.log(err)
+      }
+      else{
+        res.render("orderSummary.ejs", {ItemsToRender: items, InventoryItems: inventoryItems})
+
+      }
+    })//end of InventoryItems.find
+  })//end of Item.find
+})//end of /ordersummary/search post method
+//-------------------------------end of orderSummary and orderSummary/search routes-------------------------------------------------------------
 
 
 app.get("/inventory", function(req,res ){
@@ -121,13 +133,13 @@ app.route("/editInventory")
   .post(function(req,res){
     console.log(req.body.itemCode)
     InventoryItem.findOneAndUpdate({itemCode: req.body.itemCode}, {
-      itemCode: req.body.itemCode,//itemcode of the item
+      itemCode: req.body.itemCode,
       size: req.body.size, //the size of the item,might not be applicable to all ItemSchema
       units: req.body.units,// current units of the item
       unitDescription: req.body.unitDescription, //description of what a single unit of the item is
       location: req.body.location, //where the item is located at
       subLocation: req.body.subLocation, //the specific place where the item is located within the location
-      itemDescription: req.body.itemDescription,//description of the item
+      itemDescription: req.body.itemDescription,//
       notes: req.body.notes //any additional notes about the item.
 
     }).then(item => console.log(item))
@@ -221,8 +233,8 @@ app.route('/request')//route handler for the request route entry in the post met
 
     })
 
-
     requestedItem.save()//Saves the requested item to the mongo database
+
     res.redirect("/request")
 
   })
@@ -238,6 +250,8 @@ app.route('/request')//route handler for the request route entry in the post met
 app.get("/download",function(req,res){
   res.render("download.ejs")
 })
+
+
 
 app.post("/download/inventory",function(req,res){
     InventoryItem.find(function(err,items){
@@ -261,19 +275,39 @@ app.post("/download/inventory",function(req,res){
           openFile("Inventory.csv")
       }//ensd of else statement
     })//end of inventoryItem.find and post route
+    res.redirect("/download")//directs user back to download page
 })//end of post route
 
 
 
+app.post("/download/requestedItems",function(req,res){
+    Item.find(function(err,items){
+      if (err){
+        console.log(err)
+      }
+
+      else{
+        let csvItems = []// will contain the string items that need to be put into the csv which the user will download
+        csvItems.push("email" + "," + "name" + "," + "committee" + "," + "event" + "," + "Item Code" + "," + "Description" + "," + "Quantity"  + "\n") //the appended String will be the titles for the cells in the csv
+
+          for (i in items){//iterates through all the items in the Items collection
+            item = items[i] //gets the current Item in the items array in the for loop
+            let stringCsvToAppend = item.email + "," +  item.name + "," + item.committee + "," +  item.event + "," + item.itemCode + "," +  item.itemDescription + "," + item.quantity + "," + "\n"//creates a csv item by properly formatting the javascirpt object into a csv string
+            csvItems.push(stringCsvToAppend)//adds the csv string to the array which contains all the csv strings
+
+          }
+          let finalCSV = csvItems.join('')//joins all the items in the csvItems array into one string
+          console.log(finalCSV)
+          write.sync('Homecoming.csv', finalCSV, { newline: false });//writes the finalCSV string to a file called "Homecoming.csv", and homecoming.csv is the file which the user will download which contains all the homecoming item requests
+          openFile("Homecoming.csv")
+      }//ensd of else statement
+    })//end of Item.find and post route
+    res.redirect("/download")//directs user back to download page
+})//end of post route
 
 
 
-  app.post("download/requestedItems",function(req,res){
-
-  })
-
-
-
+//the function below uses the "open" npm library to open a file or url in its default viewer
 async function openFile(url){
    await open(url);
 }

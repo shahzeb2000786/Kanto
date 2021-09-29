@@ -9,6 +9,7 @@ const mongoose = require("mongoose", {useNewUrlParser: true}, {useUnifiedTopolog
 const ObjectsToCsv = require('objects-to-csv');; //library which allows json to be converted to csv
 const open = require ("open")
 const write = require ("write")
+//import { google } from 'googleapis';
 
 app.set("view engine", "ejs") //sets the view engine as ejs to allow to use ejs files
 app.use(bodyParser.urlencoded({extended: false})) //option that needs to be passedin order to use body parser
@@ -34,6 +35,22 @@ app.set('view engine', 'ejs');
 
 
 
+// const googleConfig = {
+//   clientId: '4910844829-ubok4a4be5me169o9m1gkhpidsq8qs3p.apps.googleusercontent.com', // e.g. asdfghjkljhgfdsghjk.apps.googleusercontent.com
+//   clientSecret: 'kVqRQyFf8ou-L7_MCCqH0L5E', // e.g. _ASDFA%DFASDFASDFASD#FAD-
+//   redirect: 'https://google.com' // this must match your google api settings
+// };
+//
+// /**
+//  * Create the google auth object which gives us access to talk to google's apis.
+//  */
+// function createConnection() {
+//   return new google.auth.OAuth2(
+//     googleConfig.clientId,
+//     googleConfig.clientSecret,
+//     googleConfig.redirect
+//   );
+// }
 
 
 //-------------------------------------------------------------------------------------------
@@ -168,12 +185,13 @@ app.post("/editInventory/search", function(req,res){
     else{
       res.render("editInventory", {ItemsToRender: items})
     }
-
   })
 })
 //--------------------------------end of editinventory/search routes---------------------------------------------------------
 
-
+app.get("/signin", (req,res)=> {
+  res.render("signin")
+})
 
 
 

@@ -22,7 +22,7 @@ app.set('view engine', 'ejs');
 
 
 const uri = process.env.ATLAS_URI
-mongoose.connect("mongodb+srv://sqa5719:Sa786sa786@@cluster0.dt2ez.mongodb.net/Supply_Request?retryWrites=true&w=majority", {useNewUrlParser: true, useCreateIndex: true})
+mongoose.connect("INSERT_YOUR_CONNECTION_STRING_HERE", {useNewUrlParser: true, useCreateIndex: true})
 const connection = mongoose.connection;
 connection.once("open", function(){
   console.log("Mongo database connection successfully established.")
